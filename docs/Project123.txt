@@ -1,0 +1,9 @@
+
+MoviesByTheGram:
+
+This app uses Instagram’s API to parse the users profile and all their data in order to create a profile of the user using IBM Watson’s sentiment analysis. Based on this generated profile the app will query rotten tomato’s database of movies and their reviews to figure out which movies the user would enjoy watching. 
+
+
+UpTheGram:
+
+This app queries the users Instagram profile and extracts metadata relating to their posting patterns and what they actually post as well. Using this data the app will then either suggest photo spots/restaurants/wildlife reserves etc., using foursquare’s api based on the type of content the user interacts with.

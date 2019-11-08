@@ -1,0 +1,5 @@
+Analysis and Architecture Design 
+
+3. The user we chose to describe is when the logged in user searches a topic, which calls the Foursquare API. First, the user types in a topic into the search bar. Then the program calls the Foursquare API and the call returns a JSON based on the search. We then parse through the JSON and display a list to the user based on what they typed into the search bar. One thing that could go wrong is if the user types in an invalid topic, meaning the Foursquare has no results for that topic. If that happens, we return an error message telling the user to try a different topic. 
+
+4. We use Flask because it is powerful and easy to use with python. The entire team is most comfortable using python. Foursquare and Instagram are also easy to use with Python. This means that it is easy to connect all the API's together. We decided not to use other platforms because no one on the team has a lot of experience with other platforms other than Flask. 

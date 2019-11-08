@@ -7,6 +7,7 @@ Created on Thu Oct 24 13:37:13 2019
 
 # main.py
 from tables import *
+from test_foursquare import *
 from flask import Flask
 from forms import PlaceSearchForm
 from flask import flash, render_template, request, redirect
@@ -26,18 +27,11 @@ def index():
 @app.route('/results')
 def search_results(search):
     results = []
-    #search_string = search.data['search']
- 
-   # if search.data['search'] == '':
-        #qry = db_session.query(Album)
-    #    results = False #qry.all()
- 
-    #if not results:
-    #    flash('No results found!')
-    #    return redirect('/')
-    #else:
+    search_string = search.data['search']
+    
+    results = call_API(search_string)
     # display results
-    results = [dict(city="Boston", name="Tatte", address="Beacon St")]
+    #results = [dict(city="Boston", name="Tatte", address="Beacon St")]
     table = Results(results)
     table.border = True
     return render_template('results.html', table=table)

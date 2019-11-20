@@ -1,0 +1,3 @@
+UserStory3: Recommendation Tab 
+
+Once the logged in user is on their dashboard, they can click the recommendation tab on the left. Once they click it, they will be directed to a new page that displays a search prompt and pictures from Foursquare of places based on their current location. The user can search other locations in order to see what is popular and recommended to them in that area. After they search, thumbnails of places will appear. They can click on them for more information, like reviews and address. The application will also link them to that location using Google Maps. 

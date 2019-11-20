@@ -1,0 +1,12 @@
+Project Idea #1: 
+
+UpTheGram:
+
+This web application uses Instagram's API and IBM Watson's API to query the users Instagram profile and extracts metadata relating to their posting patterns and what they actually post as well. Using this data the web application will then either relay information about their profile based on captions and posts in order for the user to optimize the amount of likes to receive on a future post. The application will also suggest photo spots/restaurants/wildlife reserves etc., using Foursquare’s API based on the type of content the user views, likes, and interacts with on Instagram. 
+
+Project Idea #2: 
+
+MoviesByTheGram:
+
+This web application uses Instagram’s API to parse the users profile and all their data in order to create a profile of the user using IBM Watson’s sentiment analysis. Based on this generated profile the app will query Rotten Tomato’s database of movies and their reviews to figure out which movies the user would enjoy watching. 
+

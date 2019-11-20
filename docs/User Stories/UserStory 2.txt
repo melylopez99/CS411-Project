@@ -1,0 +1,5 @@
+Project Up-The-Gram
+
+User Story 2: Navigating the Home Dashboard and Their Data
+
+	After a user logs in, they will come to their home dashboard page. The dashboard page will display quick analytics about their profile, including their most liked/commented-on picture of all time and their current trending photos. There will also be information about the application and what it can do for the user. On the dashboard, there will be links to other parts of the app such as the recommendations page and a more detailed analytics page. If the user wants to see a more detailed breakdown of their post history, they will go to the data page which will display graphs/charts about their number of likes over time for each type of photo. They will be able to see a breakdown of the comments they get on their photos such as how many positive comments they are getting. 

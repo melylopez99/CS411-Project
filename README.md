@@ -8,5 +8,7 @@ Call to API and search functionality
 
 # Directions 
 export FLASK_APP='main.py' 
+
 flask run 
+
 (in prototype directory) 

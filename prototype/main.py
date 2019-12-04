@@ -9,11 +9,13 @@ Created on Thu Oct 24 13:37:13 2019
 from tables import *
 from test_foursquare import *
 from flask import Flask
-from forms import PlaceSearchForm
+from forms import *
 from flask import flash, render_template, request, redirect, url_for
 from flask_oauth import OAuth
 from flask import session
 from flask import redirect
+import requests
+import json
 
 
 oauth = OAuth()
@@ -29,7 +31,7 @@ facebook = oauth.remote_app('facebook',
     authorize_url='https://www.facebook.com/dialog/oauth',
     consumer_key='437873623791939',
     consumer_secret='d4c50e029c24dc447aef350328451e18',
-    request_token_params={'scope': 'email'}
+    request_token_params={'scope': 'email, instagram_basic, pages_show_list, instagram_manage_insights, instagram_manage_comments'}
 )
 
 @app.route('/oauth-authorized')
@@ -41,9 +43,10 @@ def oauth_authorized(resp):
             request.args['error_reason'],
             request.args['error_description']
         )
+    print("resp is ",resp)
     session['oauth_token'] = (resp['access_token'], '')
     #me = facebook.get('/me')
-    return redirect(url_for("search"))
+    return redirect(url_for("main_menu"))
 
 @app.route('/login')
 def login():
@@ -54,6 +57,25 @@ def login():
 def get_facebook_token(token=None):
     return session.get('oauth_token')
 
+def append_person(s):
+    person = get_facebook_token()[0]
+    link = s + person
+    return link
+
+@app.route('/main_menu', methods=['GET','POST'])
+def main_menu():
+    link = append_person('https://graph.facebook.com/v5.0/me?fields=first_name&access_token=')
+    r = requests.get(link)
+    r = json.loads(r.text)
+    name = r["first_name"]
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'Search_id':
+            return redirect(url_for('search'))
+        elif request.form['btn_identifier'] == 'Analytics_id':
+            return redirect(url_for('analytics'))
+
+    return render_template('main_menu.html',name=name)
+
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     search = PlaceSearchForm(request.form)
@@ -62,6 +84,9 @@ def search():
  
     return render_template('search.html', form=search)
  
+@app.route('/analytics', methods=['GET','POST'])
+def analytics():
+    pass
  
 @app.route('/results')
 def search_results(search):

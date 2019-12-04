@@ -7,7 +7,11 @@ Created on Thu Oct 24 13:32:32 2019
 
 # forms.py
  
-from wtforms import Form, StringField, SelectField
+from wtforms import Form, StringField, SelectField, SubmitField
+
+class MainMenuForm(Form):
+    search_page = SubmitField()
+    analytics_page = SubmitField()
  
 class PlaceSearchForm(Form):
 

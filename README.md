@@ -9,6 +9,8 @@ Call to API and search functionality
 # Directions 
 export FLASK_APP='main.py' 
 
-flask run 
+export FLASK_ENV=development
+
+flask run --cert=adhoc
 
 (in prototype directory) 

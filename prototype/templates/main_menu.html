@@ -1,16 +1,31 @@
-<doctype html>
+<!doctype html>
+<html>
 <head>
     <title>Main Menu</title>
+    <meta name="description" content="Page once logged in"> 
+    <style> 
+    body {
+    	background-color: #D8BFD8;
+    }
+    h2{ 
+    	text-align: center; 
+    	font-family: American Typewriter, serif;
+     }
+     p{
+     	text-align: center; 
+     }
+	</style>
 </head>
 
 <h2>Hello {{name}}! What would you like to do? </h2>
 
 <form method="post">
-    <input type="hidden" name="btn_identifier" value="Search_id" />
-    <input type="submit" value="Search">
+    <p><input type="hidden" name="btn_identifier" value="Search_id" />
+    <input type="submit" value="Search"></p>
 </form>
 
 <form method="post">
-    <input type="hidden" name="btn_identifier" value="Analytics_id" />
-    <input type="submit" value="Analytics">
+    <p><input type="hidden" name="btn_identifier" value="Analytics_id" />
+    <input type="submit" value="Analytics"></p>
 </form>
+</html>

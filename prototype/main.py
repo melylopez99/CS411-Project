@@ -68,6 +68,7 @@ def main_menu():
     r = requests.get(link)
     r = json.loads(r.text)
     name = r["first_name"]
+    session['first_name'] = name
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'Search_id':
             return redirect(url_for('search'))
@@ -83,10 +84,78 @@ def search():
         return search_results(search)
  
     return render_template('search.html', form=search)
- 
+
+def accounts_get():
+    accounts_link = append_person('https://graph.facebook.com/v5.0/me?fields=accounts&access_token=')
+    accounts_res = requests.get(accounts_link)
+    accounts_res = json.loads(accounts_res.text)
+    page_name = accounts_res["accounts"]["data"][0]["name"]
+    session["page_name"] = page_name
+    page_id = accounts_res["accounts"]["data"][0]["id"]
+    session["page_id"] = page_id
+    
+def ig_get():
+    page_id = session["page_id"]
+    ig_link = 'https://graph.facebook.com/v5.0/' + page_id + '?fields=instagram_business_account&access_token='
+    ig_link = append_person(ig_link)
+    ig_res = requests.get(ig_link)
+    ig_res = json.loads(ig_res.text)
+    ig_id = ig_res["instagram_business_account"]["id"]
+    session["ig_id"] = ig_id
+    
+def media_get():
+    ig_id = session["ig_id"]
+    media_link = 'https://graph.facebook.com/v5.0/' + ig_id + "/media?access_token="
+    media_link = append_person(media_link)
+    media_res = requests.get(media_link)
+    media_res = json.loads(media_res.text)
+    posts = []
+    for x in range(len(media_res["data"])):
+        posts += [media_res["data"][x]["id"]]
+    session["posts"] = posts
+    captions = []
+    likes = []
+    urls = []
+    for x in range(len(posts)):
+        x_cap = captions_get(posts[x])
+        x_likes = likes_get(posts[x])
+        x_url = photo_url(posts[x])
+        urls += [x_url]
+        captions += [x_cap]
+        likes += [x_likes]
+    session["photo_urls"] = urls
+    session["captions"] = captions
+    session["likes"] = likes
+    
+def photo_url(post_id):
+    post_link = 'https://graph.facebook.com/v5.0/' + post_id + "?fields=media_url&access_token="
+    post_link = append_person(post_link)
+    url_res = requests.get(post_link)
+    url_res = json.loads(url_res.text)
+    return url_res["media_url"] 
+    
+def captions_get(post_id):
+    post_link = 'https://graph.facebook.com/v5.0/' + post_id + "?fields=caption&access_token="
+    post_link = append_person(post_link)
+    caption_res = requests.get(post_link)
+    caption_res = json.loads(caption_res.text)
+    return caption_res["caption"] 
+    
+def likes_get(post_id):
+    post_link = 'https://graph.facebook.com/v5.0/' + post_id + "?fields=like_count&access_token="
+    post_link = append_person(post_link)
+    likes_res = requests.get(post_link)
+    likes_res = json.loads(likes_res.text)
+    return likes_res["like_count"]
+
 @app.route('/analytics', methods=['GET','POST'])
 def analytics():
-    pass
+    accounts_get()
+    page_name=session["page_name"]
+    ig_get()
+    media_get()
+    photo_urls = session["photo_urls"]
+    return render_template('analytics.html', page_name=page_name, photos=photo_urls)
  
 @app.route('/results')
 def search_results(search):

@@ -16,12 +16,44 @@ from flask import session
 from flask import redirect
 import requests
 import json
+import os
+from config import Config
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 
 
 oauth = OAuth()
- 
+
 app = Flask(__name__)
 app.secret_key = "dev"
+
+
+#creates a db file in the repo
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False))
+    posts = db.relationship('Post', lazy=True)
+    
+    
+    def __repr__(self):
+        return f"User('{self.id}', '{self.username}')"
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    image_url = db.Column(db.String(200))
+    comment_count = db.Column(db.Integer)
+    captions = db.Column(db.String(1000))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    num_likes = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"Post('{self.id}', '{self.comment_count}')"
+    
 
 
 facebook = oauth.remote_app('facebook',
@@ -33,6 +65,7 @@ facebook = oauth.remote_app('facebook',
     consumer_secret='d4c50e029c24dc447aef350328451e18',
     request_token_params={'scope': 'email, instagram_basic, pages_show_list, instagram_manage_insights, instagram_manage_comments'}
 )
+
 
 @app.route('/oauth-authorized')
 @facebook.authorized_handler
@@ -127,6 +160,7 @@ def media_get():
     session["captions"] = captions
     session["likes"] = likes
     
+    
 def photo_url(post_id):
     post_link = 'https://graph.facebook.com/v5.0/' + post_id + "?fields=media_url&access_token="
     post_link = append_person(post_link)
@@ -175,6 +209,8 @@ def index():
     if request.method == 'POST':
         return login()
     return render_template('index.html')
- 
+
 if __name__ == '__main__':
     app.run(ssl_context='adhoc')
+
+

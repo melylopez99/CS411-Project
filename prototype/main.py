@@ -36,7 +36,7 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False))
+    username = db.Column(db.String(50), nullable=False)
     posts = db.relationship('Post', lazy=True)
     
     

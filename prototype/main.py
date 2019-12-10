@@ -20,6 +20,7 @@ import os
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import sqlite3
 
 oauth = OAuth()
 
@@ -27,33 +28,22 @@ app = Flask(__name__)
 app.secret_key = "dev"
 
 #creates a db file in the repo
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False))
-    image_urls = db.Column(db.Char)
-    comment_count = db.Column(db.Integer)
-    captions = db.Column(db.Char)
-    num_likes = db.Column(db.Integer)
-#   posts = db.relationship('Post', lazy=True)
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     username = db.Column(db.String(50), nullable=False)
+#     image_urls = db.Column(db.Char)
+#     comment_count = db.Column(db.Integer)
+#     captions = db.Column(db.Char)
+#     num_likes = db.Column(db.Integer)
+# #   posts = db.relationship('Post', lazy=True)
 
     
-    def __repr__(self):
-        return f"User('{self.id}', '{self.username}')"
-
-#class Post(db.Model):
-#   id = db.Column(db.Integer, primary_key=True)
-#   image_url = db.Column(db.String(200))
-#   comment_count = db.Column(db.Integer)
-#   captions = db.Column(db.String(1000))
-#   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#   num_likes = db.Column(db.Integer)
-
-#   def __repr__(self):
-#       return f"Post('{self.id}', '{self.comment_count}')"
+def __repr__(self):
+    return f"User('{self.id}', '{self.username}')"
 
 facebook = oauth.remote_app('facebook',
     base_url='https://graph.facebook.com/',
@@ -178,6 +168,17 @@ def likes_get(post_id):
     likes_res = json.loads(likes_res.text)
     return likes_res["like_count"]
 
+def to_Database(table, ana_list): 
+    # creating connection to Database 
+    db_file = r"InstagramAnalytics.db" 
+    conn = sqlite3.connect(db_file, timeout=10.0)
+ 
+    in_table = ''' INSERT INTO Instagram(name, likes, captions) VALUES(?,?,?) '''
+    cur = conn.cursor() 
+    cur.execute(in_table, ana_list)
+    conn.commit() 
+    conn.close() 
+
 @app.route('/analytics', methods=['GET','POST'])
 def analytics():
     accounts_get()
@@ -185,11 +186,13 @@ def analytics():
     ig_get()
     media_get()
     photo_urls = session["photo_urls"]
+    analytics_list = [page_name, session["likes"], session["captions"]]
+    to_Database(page_name, analytics_list)
 
 ###########
-    CommentCount = len(session["captions"])
-    userToAdd = User(username=page_name, image_urls=photo_urls, comment_count=CommentCount, captions=session["captions"], num_likes=sum(session["likes"])
-    db.session.add(UserToAdd)
+    # CommentCount = len(session["captions"])
+    # userToAdd = User(username=page_name, image_urls=photo_urls, comment_count=CommentCount, captions=session["captions"], num_likes=sum(session["likes"])
+    # db.session.add(UserToAdd)
 ###########
 
     return render_template('analytics.html', page_name=page_name, photos=photo_urls)
@@ -216,5 +219,7 @@ def index():
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc')
+
+
 
 

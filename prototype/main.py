@@ -188,6 +188,7 @@ def analytics():
     photo_urls = session["photo_urls"]
     analytics_list = [page_name, session["likes"], session["captions"]]
     to_Database(page_name, analytics_list)
+    Avg_likes = sum(session["likes"])/len(session["likes"])
 
 ###########
     # CommentCount = len(session["captions"])
@@ -195,7 +196,7 @@ def analytics():
     # db.session.add(UserToAdd)
 ###########
 
-    return render_template('analytics.html', page_name=page_name, photos=photo_urls)
+    return render_template('analytics.html', page_name=page_name, photos=photo_urls, Average_Likes=avg_likes)
 
 
 @app.route('/results')

@@ -17,7 +17,7 @@ def call_API(search_thing):
             v='20180323',
             ll='42.3601,-71.0589',
             query=search_thing,
-            limit=10
+            limit=15
             )
     resp = requests.get(url=url, params=params)
     data = json.loads(resp.text)

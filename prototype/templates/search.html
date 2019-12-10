@@ -16,15 +16,18 @@
 	p { 
 		text-align: center; 
 	}
+	dl { 
+		text-align: center; 
+	}
 	</style>
 </head>
  
 <h2>Search Foursquare</h2>
  
-{% from "_formhelpers.html" import render_field %}
+<p>{% from "_formhelpers.html" import render_field %}</p>
 <form method=post>
   <dl>
     {{ render_field(form.search) }}
   </dl>
-  <p><input type=submit value=Search>
+  <p><input type=submit value=Search></p>
 </form>

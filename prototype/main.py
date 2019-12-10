@@ -21,13 +21,10 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-
-
 oauth = OAuth()
 
 app = Flask(__name__)
 app.secret_key = "dev"
-
 
 #creates a db file in the repo
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -36,25 +33,27 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    posts = db.relationship('Post', lazy=True)
-    
+    username = db.Column(db.String(50), nullable=False))
+    image_urls = db.Column(db.Char)
+    comment_count = db.Column(db.Integer)
+    captions = db.Column(db.Char)
+    num_likes = db.Column(db.Integer)
+#   posts = db.relationship('Post', lazy=True)
+
     
     def __repr__(self):
         return f"User('{self.id}', '{self.username}')"
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    image_url = db.Column(db.String(200))
-    comment_count = db.Column(db.Integer)
-    captions = db.Column(db.String(1000))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    num_likes = db.Column(db.Integer)
+#class Post(db.Model):
+#   id = db.Column(db.Integer, primary_key=True)
+#   image_url = db.Column(db.String(200))
+#   comment_count = db.Column(db.Integer)
+#   captions = db.Column(db.String(1000))
+#   user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#   num_likes = db.Column(db.Integer)
 
-    def __repr__(self):
-        return f"Post('{self.id}', '{self.comment_count}')"
-    
-
+#   def __repr__(self):
+#       return f"Post('{self.id}', '{self.comment_count}')"
 
 facebook = oauth.remote_app('facebook',
     base_url='https://graph.facebook.com/',
@@ -65,8 +64,6 @@ facebook = oauth.remote_app('facebook',
     consumer_secret='d4c50e029c24dc447aef350328451e18',
     request_token_params={'scope': 'email, instagram_basic, pages_show_list, instagram_manage_insights, instagram_manage_comments'}
 )
-
-
 @app.route('/oauth-authorized')
 @facebook.authorized_handler
 def oauth_authorized(resp):
@@ -160,7 +157,6 @@ def media_get():
     session["captions"] = captions
     session["likes"] = likes
     
-    
 def photo_url(post_id):
     post_link = 'https://graph.facebook.com/v5.0/' + post_id + "?fields=media_url&access_token="
     post_link = append_person(post_link)
@@ -189,15 +185,23 @@ def analytics():
     ig_get()
     media_get()
     photo_urls = session["photo_urls"]
+
+###########
+    CommentCount = len(session["captions"])
+    userToAdd = User(username=page_name, image_urls=photo_urls, comment_count=CommentCount, captions=session["captions"], num_likes=sum(session["likes"])
+    db.session.add(UserToAdd)
+###########
+
     return render_template('analytics.html', page_name=page_name, photos=photo_urls)
- 
+
+
 @app.route('/results')
 def search_results(search):
     results = []
     search_string = search.data['search']
     
     results = call_API(search_string)
-    # display results
+    #display results
     #results = [dict(city="Boston", name="Tatte", address="Beacon St")]
     table = Results(results)
     table.border = True
